@@ -18,12 +18,10 @@ export class HomePage {
   constructor(public navCtrl: NavController) {
     this.appId = 'testapplication-iuxfo';
     this.stitchClientPromise = StitchClientFactory.create(this.appId);
-    this.msgs = [];
     this.commentToAdd = '';
   }
 
   ngOnInit(){
-    //this.displayComments();
     this.login();
   }
 
@@ -32,19 +30,18 @@ export class HomePage {
       stitchClient.login();
       console.log('logged in as: ' + stitchClient.authedId());
       this.stitchClient = stitchClient;
+      this.displayComments();
     })
     .catch(e => console.log('error: ', e));
   }
 
   displayComments(){
-    let db = this.stitchClient.service('mongodb', 'mongodb-atlas').db('blog');
-    let itemsCollection = db.collection('comments');
-    
-    itemsCollection.find({}, {limit: 1000})
-    .asArray()
-    .then(docs => {
-      this.msgs = docs.map(doc => doc.comment);
-    });     
+    this.msgs = [];
+
+    this.stitchClient.executeFunction("loadAllComments")
+    .then((documents) => {
+        documents.forEach((document) => this.msgs.push(document.comment));
+    });   
   }
 
   addComment(){
@@ -55,7 +52,8 @@ export class HomePage {
     const userId = this.stitchClient.authedId();
     return itemsCollection.insertOne(
       {userName: userId, comment: this.commentToAdd}
-    ).then(this.commentToAdd = '');   
+    ).then(this.commentToAdd = '')
+    .then(this.displayComments());   
   }
 
 }
