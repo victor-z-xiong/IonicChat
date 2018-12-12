@@ -5,13 +5,15 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let msg of msgs">
-      <ion-card>
-        <div>{{msg}}</div>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+  <ion-content #content class="chats" scrollDownOnLoad="true">
+      <ion-list>
+        <ion-item *ngFor="let msg of msgs">
+          <ion-card>
+            <div>{{msg}}</div>
+          </ion-card>
+        </ion-item>
+      </ion-list>
+  </ion-content>
 
   <ion-list inset>
 
@@ -20,6 +22,7 @@
         <ion-input [(ngModel)]="commentToAdd"></ion-input>
       </ion-item>
       <button (click)="addComment()" ion-button>Add Comment</button>
+      <button (click)="displayComments()" ion-button>Refresh</button>
     
     </ion-list>
 </ion-content>

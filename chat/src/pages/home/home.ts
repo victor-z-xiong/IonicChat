@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { StitchClientFactory } from 'mongodb-stitch';
+import { Content } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -9,6 +10,7 @@ import { StitchClientFactory } from 'mongodb-stitch';
 
 
 export class HomePage {
+  @ViewChild('content') content: Content;
   appId: any;
   stitchClientPromise: any;
   msgs: any;
@@ -41,7 +43,7 @@ export class HomePage {
     this.stitchClient.executeFunction("loadAllComments")
     .then((documents) => {
         documents.forEach((document) => this.msgs.push(document.comment));
-    });   
+    }).then(this.content.scrollToBottom(300));   
   }
 
   addComment(){
